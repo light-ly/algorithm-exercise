@@ -1,12 +1,21 @@
+use std::fmt::Debug;
+
 struct BstNode<T> {
     data: T,
     left: Option<Box<BstNode<T>>>,
     right: Option<Box<BstNode<T>>>
 }
 
-impl <T: PartialOrd> BstNode<T> {
+impl<T> BstNode<T>
+where
+    T: PartialOrd + Debug,
+{
     fn new(data: T) -> Self {
-        BstNode { data, left: None, right: None }
+        BstNode {
+            data,
+            left: None,
+            right: None
+        }
     }
 
     fn insert(&mut self, data: T) {
@@ -28,7 +37,10 @@ pub struct Bst<T> {
     root: Option<BstNode<T>>
 }
 
-impl<T: PartialOrd> Bst<T> {
+impl<T> Bst<T>
+where
+    T: PartialOrd + Debug,
+{
     pub fn new() -> Self {
         Bst { root: None }
     }
