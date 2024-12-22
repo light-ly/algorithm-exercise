@@ -28,4 +28,6 @@ fn bst_test() {
     bst.postorder_traversal();
     println!("       find max data: {}", bst.max().unwrap());
     println!("       find min data: {}", bst.min().unwrap());
+    println!("    search 10 in bst: {}", bst.search(10));
+    println!("    search  6 in bst: {}", bst.search(6));
 }

@@ -38,6 +38,24 @@ where
         }
     }
 
+    fn search(&self, data: T) -> bool {
+        match data.cmp(&self.data) {
+            Ordering::Less => {
+                match &self.left {
+                    Some(left) => left.search(data),
+                    None => false,
+                }
+            }
+            Ordering::Greater => {
+                match &self.right {
+                    Some(right) => right.search(data),
+                    None => false,
+                }
+            }
+            Ordering::Equal => true
+        }
+    }
+
     fn min(&self) -> T {
         match &self.left {
             Some(left) => left.min(),
@@ -105,6 +123,14 @@ where
         } else {
             self.root = Some(BstNode::<T>::new(data))
         }
+    }
+
+    pub fn search(&self, data: T) -> bool {
+        if let Some(root) = &self.root {
+            root.search(data)
+        } else {
+            false
+        }   
     }
 
     pub fn min(&self) -> Option<T> {
