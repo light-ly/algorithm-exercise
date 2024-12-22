@@ -1,13 +1,14 @@
-use rand::Rng;
-
 mod bst;
 
 use bst::Bst;
 
 fn main() {
     println!("Hello, here is LiuYi's algorithm exercise!");
-    let mut rng = rand::thread_rng();
-    let test_vector = (0..18).map(|_| rng.gen_range(0..=1000)).collect();
+    let test_vector = vec![4, 2, 1, 3, 6, 5, 7];
+    println!("test vector {:?}", test_vector);
+    println!("");
+
+    println!("1. BST Test");
     bst_test(test_vector);
 }
 
@@ -17,4 +18,11 @@ fn bst_test(test_vector: Vec<u64>) {
     for ele in test_vector {
         bst.insert(ele);
     }
+
+    print!(" pre order traversal: ");
+    bst.preorder_traversal();
+    print!("  in order traversal: ");
+    bst.inorder_traversal();
+    print!("post order traversal: ");
+    bst.postorder_traversal();
 }

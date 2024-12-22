@@ -31,6 +31,41 @@ where
             }
         }
     }
+
+    fn preorder_traversal(&self) {
+        self.show();
+        if let Some(left) = &self.left {
+            left.preorder_traversal();
+        }
+        if let Some(right) = &self.right {
+            right.preorder_traversal();
+        }
+    }
+
+    fn inorder_traversal(&self) {
+        if let Some(left) = &self.left {
+            left.inorder_traversal();
+        }
+        self.show();
+        if let Some(right) = &self.right {
+            right.inorder_traversal();
+        }
+    }
+
+    fn postorder_traversal(&self) {
+        if let Some(left) = &self.left {
+            left.postorder_traversal();
+        }
+        if let Some(right) = &self.right {
+            right.postorder_traversal();
+        }
+        self.show();
+    }
+
+
+    fn show(&self) {
+        print!("{:?} ", self.data);
+    }
 }
 
 pub struct Bst<T> {
@@ -50,6 +85,33 @@ where
             root.insert(data);
         } else {
             self.root = Some(BstNode::<T>::new(data))
+        }
+    }
+
+    pub fn preorder_traversal(&self) {
+        if let Some(root) = &self.root {
+            root.preorder_traversal();
+            println!("");
+        } else {
+            println!("A Empty Tree")
+        }
+    }
+
+    pub fn inorder_traversal(&self) {
+        if let Some(root) = &self.root {
+            root.inorder_traversal();
+            println!("");
+        } else {
+            println!("A Empty Tree")
+        }
+    }
+
+    pub fn postorder_traversal(&self) {
+        if let Some(root) = &self.root {
+            root.postorder_traversal();
+            println!("");
+        } else {
+            println!("A Empty Tree")
         }
     }
 }
