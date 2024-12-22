@@ -8,7 +8,7 @@ struct BstNode<T> {
 
 impl<T> BstNode<T>
 where
-    T: PartialOrd + Debug,
+    T: PartialOrd + Debug + Clone,
 {
     fn new(data: T) -> Self {
         BstNode {
@@ -29,6 +29,20 @@ where
                 Some(right) => right.insert(data),
                 None => self.right = Some(Box::new(Self::new(data)))
             }
+        }
+    }
+
+    fn min(&self) -> T {
+        match &self.left {
+            Some(left) => left.min(),
+            None => self.data.clone()
+        }
+    }
+
+    fn max(&self) -> T {
+        match &self.right {
+            Some(right) => right.max(),
+            None => self.data.clone()
         }
     }
 
@@ -62,7 +76,6 @@ where
         self.show();
     }
 
-
     fn show(&self) {
         print!("{:?} ", self.data);
     }
@@ -74,7 +87,7 @@ pub struct Bst<T> {
 
 impl<T> Bst<T>
 where
-    T: PartialOrd + Debug,
+    T: PartialOrd + Debug + Clone,
 {
     pub fn new() -> Self {
         Bst { root: None }
@@ -85,6 +98,22 @@ where
             root.insert(data);
         } else {
             self.root = Some(BstNode::<T>::new(data))
+        }
+    }
+
+    pub fn min(&self) -> Option<T> {
+        if let Some(root) = &self.root {
+            Some(root.min())
+        } else {
+            None
+        }
+    }
+
+    pub fn max(&self) -> Option<T> {
+        if let Some(root) = &self.root {
+            Some(root.max())
+        } else {
+            None
         }
     }
 
