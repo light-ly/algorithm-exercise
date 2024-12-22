@@ -17,8 +17,8 @@ impl <T: PartialOrd> BstNode<T> {
             }
         } else {
             match &mut self.right {
-                Some(left) => left.insert(data),
-                None => self.left = Some(Box::new(Self::new(data)))
+                Some(right) => right.insert(data),
+                None => self.right = Some(Box::new(Self::new(data)))
             }
         }
     }
