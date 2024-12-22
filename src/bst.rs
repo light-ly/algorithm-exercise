@@ -1,34 +1,40 @@
-use std::fmt::Debug;
+use std::{cmp::Ordering, fmt::Debug};
 
 struct BstNode<T> {
     data: T,
     left: Option<Box<BstNode<T>>>,
-    right: Option<Box<BstNode<T>>>
+    right: Option<Box<BstNode<T>>>,
+    count: u64
 }
 
 impl<T> BstNode<T>
 where
-    T: PartialOrd + Debug + Clone,
+    T: Ord + Debug + Clone,
 {
     fn new(data: T) -> Self {
         BstNode {
             data,
             left: None,
-            right: None
+            right: None,
+            count: 1
         }
     }
 
     fn insert(&mut self, data: T) {
-        if data < self.data {
-            match &mut self.left {
-                Some(left) => left.insert(data),
-                None => self.left = Some(Box::new(Self::new(data)))
+        match data.cmp(&self.data) {
+            Ordering::Less => {
+                match &mut self.left {
+                    Some(left) => left.insert(data),
+                    None => self.left = Some(Box::new(Self::new(data)))
+                }
             }
-        } else {
-            match &mut self.right {
-                Some(right) => right.insert(data),
-                None => self.right = Some(Box::new(Self::new(data)))
+            Ordering::Greater => {
+                match &mut self.right {
+                    Some(right) => right.insert(data),
+                    None => self.right = Some(Box::new(Self::new(data)))
+                }
             }
+            Ordering::Equal => self.count = self.count + 1
         }
     }
 
@@ -87,7 +93,7 @@ pub struct Bst<T> {
 
 impl<T> Bst<T>
 where
-    T: PartialOrd + Debug + Clone,
+    T: Ord + Debug + Clone,
 {
     pub fn new() -> Self {
         Bst { root: None }
