@@ -26,8 +26,8 @@ fn bst_test() {
     bst.inorder_traversal();
     print!("post order traversal: ");
     bst.postorder_traversal();
-    println!("       find max data: {}", bst.max().unwrap());
-    println!("       find min data: {}", bst.min().unwrap());
-    println!("    search 10 in bst: {}", bst.search(10));
-    println!("    search  6 in bst: {}", bst.search(6));
+    println!("       find max data: {}", bst.max().unwrap().data());
+    println!("       find min data: {}", bst.min().unwrap().data());
+    println!("    search 10 in bst: {}", bst.search(10).unwrap().data());
+    println!("    search  6 in bst: {}", bst.search(6).unwrap().data());
 }

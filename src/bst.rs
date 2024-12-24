@@ -61,17 +61,17 @@ where
         }
     }
 
-    fn min(&self) -> T {
+    fn min(&self) -> Self {
         match &self.left {
             Some(left) => left.min(),
-            None => self.data.clone()
+            None => self.clone()
         }
     }
 
-    fn max(&self) -> T {
+    fn max(&self) -> Self {
         match &self.right {
             Some(right) => right.max(),
-            None => self.data.clone()
+            None => self.clone()
         }
     }
 
@@ -138,7 +138,7 @@ where
         }   
     }
 
-    pub fn min(&self) -> Option<T> {
+    pub fn min(&self) -> Option<BstNode<T>> {
         if let Some(root) = &self.root {
             Some(root.min())
         } else {
@@ -146,7 +146,7 @@ where
         }
     }
 
-    pub fn max(&self) -> Option<T> {
+    pub fn max(&self) -> Option<BstNode<T>> {
         if let Some(root) = &self.root {
             Some(root.max())
         } else {
