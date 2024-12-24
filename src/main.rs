@@ -32,6 +32,8 @@ fn bst_test() {
 
     println!("insert complete! elapsed time: {} ns", timer.elapsed().as_nanos());
     println!("");
+    println!("see bst {:#?}", bst);
+    println!("");
     let timer = Instant::now();
 
     print!(" pre order traversal: ");
@@ -43,6 +45,8 @@ fn bst_test() {
     println!("       find max data: {}", bst.max().unwrap().data());
     println!("       find min data: {}", bst.min().unwrap().data());
     println!("    search 10 in bst: {}", bst.search(10).is_some());
+    println!("    rank of 4 in bst: {}", bst.rank(4));
+    println!("    rank of 6 in bst: {}", bst.rank(6));
 
     println!("basic test complete! elapsed time: {} ns", timer.elapsed().as_nanos());
     println!("");
@@ -59,6 +63,8 @@ fn bst_test() {
         bst.inorder_traversal();
         print!("post order traversal: ");
         bst.postorder_traversal();
+        println!("    rank of 4 in bst: {}", bst.rank(4));
+        println!("   get rank 4 in bst: {}", bst.get_with_rank(4).unwrap().data());
         println!("");
     });
 

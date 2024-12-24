@@ -1,11 +1,12 @@
 use std::{cmp::Ordering, fmt::Debug};
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct BstNode<T> {
     data: T,
     left: Option<Box<BstNode<T>>>,
     right: Option<Box<BstNode<T>>>,
-    count: u64
+    count: u64,
+    size: u64
 }
 
 impl<T> BstNode<T>
@@ -17,7 +18,8 @@ where
             data,
             left: None,
             right: None,
-            count: 1
+            count: 1,
+            size: 1
         }
     }
 
@@ -41,6 +43,16 @@ where
             }
             Ordering::Equal => self.count = self.count + 1
         }
+
+        self.size = self.calc_size()
+    }
+
+    fn calc_size(&self) -> u64 {
+        match (&self.left, &self.right) {
+            (None, None) => self.count,
+            (Some(sub), None) | (None, Some(sub)) => sub.size + self.count,
+            (Some(left), Some(right)) => left.size + right.size + self.count
+        }
     }
 
     fn remove(&mut self, data: T) -> Option<Box<BstNode<T>>> {
@@ -49,6 +61,7 @@ where
                 match &mut self.left.take() {
                     Some(left) => {
                         self.left = left.remove(data);
+                        self.size = self.calc_size();
                         Some(Box::new(self.clone()))
                     }
                     None => None
@@ -58,6 +71,7 @@ where
                 match &mut self.right.take() {
                     Some(right) => {
                         self.right = right.remove(data);
+                        self.size = self.calc_size();
                         Some(Box::new(self.clone()))
                     }
                     None => None
@@ -66,16 +80,17 @@ where
             Ordering::Equal => {
                 if self.count > 1  {
                     self.count = self.count - 1;
+                    self.size = self.calc_size();
                     Some(Box::new(self.clone()))
                 } else {
                     match (self.left.take(), self.right.take()) {
                         (None, None) => None,
-                        (Some(left), None) => Some(left),
-                        (None, Some(right)) => Some(right),
+                        (Some(sub), None) | (None, Some(sub)) => Some(sub),
                         (Some(left), Some(mut right)) => {
                             *self = right.min();
                             self.left = Some(left);
                             self.right = right.remove(data);
+                            self.size = self.calc_size();
                             Some(Box::new(self.clone()))
                         }
                     }
@@ -99,6 +114,60 @@ where
                 }
             }
             Ordering::Equal => Some(self.clone())
+        }
+    }
+
+    fn rank(&self, data: T) -> u64 {
+        match data.cmp(&self.data) {
+            Ordering::Less => {
+                match &self.left {
+                    Some(left) => left.rank(data),
+                    None => 0
+                }
+            }
+            Ordering::Greater => {
+                match &self.right {
+                    Some(right) => {
+                        let left_size = match &self.left {
+                            Some(left) => left.size,
+                            None => 0
+                        };
+                        right.rank(data) + left_size + self.count
+                    }
+                    None => 0
+                }
+            }
+            Ordering::Equal => match &self.left {
+                Some(left) => left.size + 1,
+                None => 0
+            }
+        }
+    }
+
+    fn get_with_rank(&self, k: u64) -> Option<Self> {
+        match &self.left {
+            Some(left) => {
+                if left.size >= k {
+                    left.get_with_rank(k)
+                } else if left.size + self.count >= k {
+                    Some(self.clone())
+                } else {
+                    match &self.right {
+                        Some(right) => right.get_with_rank(k - left.size - self.count),
+                        None => None
+                    }
+                }
+            }
+            None => {
+                if k == 1 {
+                    Some(self.clone())
+                } else {
+                    match &self.right {
+                        Some(right) => right.get_with_rank(k - self.count),
+                        None => None
+                    }
+                }
+            }
         }
     }
 
@@ -151,6 +220,7 @@ where
     }
 }
 
+#[derive(Clone, Debug)]
 pub struct Bst<T> {
     root: Option<Box<BstNode<T>>>
 }
@@ -182,7 +252,23 @@ where
             root.search(data)
         } else {
             None
-        }   
+        }
+    }
+
+    pub fn rank(&self, data: T) -> u64 {
+        if let Some(root) = &self.root {
+            root.rank(data)
+        } else {
+            0
+        }
+    }
+
+    pub fn get_with_rank(&self, k: u64) -> Option<BstNode<T>> {
+        if let Some(root) = &self.root {
+            root.get_with_rank(k)
+        } else {
+            None
+        }
     }
 
     pub fn min(&self) -> Option<BstNode<T>> {
