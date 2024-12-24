@@ -1,7 +1,7 @@
 use std::{cmp::Ordering, fmt::Debug};
 
 #[derive(Clone)]
-struct BstNode<T> {
+pub struct BstNode<T> {
     data: T,
     left: Option<Box<BstNode<T>>>,
     right: Option<Box<BstNode<T>>>,
@@ -19,6 +19,10 @@ where
             right: None,
             count: 1
         }
+    }
+
+    pub fn data(&self) -> T {
+        self.data.clone()
     }
 
     fn insert(&mut self, data: T) {
