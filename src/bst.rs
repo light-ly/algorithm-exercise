@@ -1,5 +1,6 @@
 use std::{cmp::Ordering, fmt::Debug};
 
+#[derive(Clone)]
 struct BstNode<T> {
     data: T,
     left: Option<Box<BstNode<T>>>,
@@ -38,21 +39,21 @@ where
         }
     }
 
-    fn search(&self, data: T) -> bool {
+    fn search(&self, data: T) -> Option<Self> {
         match data.cmp(&self.data) {
             Ordering::Less => {
                 match &self.left {
                     Some(left) => left.search(data),
-                    None => false,
+                    None => None,
                 }
             }
             Ordering::Greater => {
                 match &self.right {
                     Some(right) => right.search(data),
-                    None => false,
+                    None => None,
                 }
             }
-            Ordering::Equal => true
+            Ordering::Equal => Some(self.clone())
         }
     }
 
@@ -125,11 +126,11 @@ where
         }
     }
 
-    pub fn search(&self, data: T) -> bool {
+    pub fn search(&self, data: T) -> Option<BstNode<T>> {
         if let Some(root) = &self.root {
             root.search(data)
         } else {
-            false
+            None
         }   
     }
 
