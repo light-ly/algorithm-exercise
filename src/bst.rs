@@ -43,6 +43,47 @@ where
         }
     }
 
+    fn remove(&mut self, data: T) -> Option<Box<BstNode<T>>> {
+        match data.cmp(&self.data) {
+            Ordering::Less => {
+                match &mut self.left.take() {
+                    Some(left) => {
+                        self.left = left.remove(data);
+                        Some(Box::new(self.clone()))
+                    }
+                    None => None
+                }
+            }
+            Ordering::Greater => {
+                match &mut self.right.take() {
+                    Some(right) => {
+                        self.right = right.remove(data);
+                        Some(Box::new(self.clone()))
+                    }
+                    None => None
+                }
+            }
+            Ordering::Equal => {
+                if self.count > 1  {
+                    self.count = self.count - 1;
+                    Some(Box::new(self.clone()))
+                } else {
+                    match (self.left.take(), self.right.take()) {
+                        (None, None) => None,
+                        (Some(left), None) => Some(left),
+                        (None, Some(right)) => Some(right),
+                        (Some(left), Some(mut right)) => {
+                            *self = right.min();
+                            self.left = Some(left);
+                            self.right = right.remove(data);
+                            Some(Box::new(self.clone()))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fn search(&self, data: T) -> Option<Self> {
         match data.cmp(&self.data) {
             Ordering::Less => {
@@ -111,7 +152,7 @@ where
 }
 
 pub struct Bst<T> {
-    root: Option<BstNode<T>>
+    root: Option<Box<BstNode<T>>>
 }
 
 impl<T> Bst<T>
@@ -126,7 +167,13 @@ where
         if let Some(root) = &mut self.root {
             root.insert(data);
         } else {
-            self.root = Some(BstNode::<T>::new(data))
+            self.root = Some(Box::new(BstNode::<T>::new(data)))
+        }
+    }
+
+    pub fn remove(&mut self, data: T) {
+        if let Some(root) = &mut self.root {
+           self.root = root.remove(data)
         }
     }
 
